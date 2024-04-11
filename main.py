@@ -1,16 +1,17 @@
-import manipulate
-puzzle = [
-    ['S', 'C', 'E', 'E', 'B', 'T'],
-    ['K', 'H', 'R', 'S', 'E', 'S'],
-    ['N', 'A', 'N', 'I', 'G', 'A'],
-    ['H', 'G', 'N', 'R', 'E', 'R'],
-    ['T', 'I', 'G', 'O', 'S', 'D'],
-    ['S', 'A', 'I', 'S', 'F', 'F'],
-    ['W', 'L', 'N', 'C', 'R', 'Y'],
-    ['A', 'Y', 'S', 'E', 'E', 'L']
-]
-puzzleStr = []
 
+puzzle = [
+    ['E', 'R', 'M', 'F', 'A', 'N'],
+    ['V', 'I', 'E', 'A', 'K', 'T'],
+    ['E', 'M', 'G', 'F', 'E', 'A'],
+    ['R', 'E', 'I', 'B', 'N', 'S'],
+    ['T', 'N', 'E', 'O', 'Y', 'S'],
+    ['A', 'M', 'L', 'I', 'I', 'U'],
+    ['E', 'Y', 'E', 'V', 'I', 'L'],
+    ['R', 'D', 'A', 'D', 'E', 'L']
+]
+
+puzzleStr = []
+used = []
 for i in puzzle:
     for letter in i:
         puzzleStr.append(letter)
@@ -51,60 +52,38 @@ def makeset():
         file.writelines(filtered_words)
 
 
-def checkNeighbors(x,y,c,w):
-    if len(w) == c:
-        return w
-    if puzzle[x+1][y] == w[c]:
-        c += 1
-        checkNeighbors(x+1,y,c,w)
-    if puzzle[x+1][y+1] == w[c]:
-        c += 1
-        checkNeighbors(x+1,y,c,w)
-    if puzzle[x+1][y-1] == w[c]:
-        c += 1
-        checkNeighbors(x+1,y,c,w)
-    if puzzle[x][y+1] == w[c]:
-        c += 1
-        checkNeighbors(x+1,y,c,w)
-    if puzzle[x-1][y+1] == w[c]:
-        c += 1
-        checkNeighbors(x+1,y,c,w)
-    if puzzle[x+1][y+1] == w[c]:
-        c += 1
-        checkNeighbors(x+1,y,c,w)
-    if puzzle[x-1][y-1] == w[c]:
-        c += 1
-        checkNeighbors(x+1,y,c,w)
-    if puzzle[x-1][y] == w[c]:
-        c += 1
-        checkNeighbors(x+1,y,c,w)
-    if puzzle[x][y-1] == w[c]:
-        c += 1
-        checkNeighbors(x+1,y,c,w)
-    else:
-        return False
+def checkNeighbors(x, y, c, w, used):
+    if c >= len(w):
+        return True
+
+    directions = [(1, 0), (1, 1), (1, -1), (0, 1), (-1, 1), (-1, -1), (-1, 0), (0, -1)]
+    for dx, dy in directions:
+        newX, newY = x + dx, y + dy
+        # Check boundaries and if the new position is not already used
+        if 0 <= newX < len(puzzle) and 0 <= newY < len(puzzle[0]) and (newX, newY) not in used:
+            if puzzle[newX][newY] == w[c]:
+                used.append((newX, newY))
+                if checkNeighbors(newX, newY, c + 1, w, used):
+                    return True
+                used.pop()  # Backtrack if not a valid path
+
+    return False
 
 
-
-
-    pass
 def checkword():
-    #with open('WordListSet.txt', 'w') as file:
-    #    words = file.readlines()
-
     words = filtered_words
-
     validWordList = []
+
     for word in words:
-        j = 0
-        i = 0
-        for i in range(0,len(puzzle)):
-            for j in range(0,len(puzzle[0])):
+        word = word.strip().upper()
+        for i in range(len(puzzle)):
+            for j in range(len(puzzle[0])):
                 if word[0] == puzzle[i][j]:
-                    try:
-                        validWordList.append(checkNeighbors(i,j,0,word))
-                    except:
-                        pass
+                    used = [(i, j)]
+                    if checkNeighbors(i, j, 1, word, used):
+                        validWordList.append(word + '\n')
+                        break  # Exit the loop once a valid placement is found
+
     with open('validWordList.txt', 'w') as file:
         file.writelines(validWordList)
 
