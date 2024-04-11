@@ -4,7 +4,7 @@ from datetime import datetime
 current_date = datetime.now().strftime('%Y-%m-%d')
 
 headers = {
-    'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:125.0) Gecko/20100101 Firefox/125.0',
+    'User-Agent': 'Mo zilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:125.0) Gecko/20100101 Firefox/125.0',
     'Accept': '*/*',
     'Accept-Language': 'en-US,en;q=0.5',
     'Accept-Encoding': 'gzip, deflate, br',
@@ -15,9 +15,9 @@ headers = {
     'Sec-Fetch-Site': 'same-origin',
     'Sec-GPC': '1',
 }
+for i in range(1,2):
+    date = f'2024-04-{10+i}'
+    response = requests.get(f'https://www.nytimes.com/games-assets/strands/{date}.json', headers=headers)
 
-current_date = '2024-03-10'
-response = requests.get(f'https://www.nytimes.com/games-assets/strands/{current_date}.json', headers=headers)
-
-with open("answers.json", 'w') as f:
-    f.write(response.text)
+    with open(f"GameArchive/{date} - answers.json", 'w') as f:
+        f.write(response.text)
