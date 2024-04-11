@@ -15,9 +15,9 @@ headers = {
     'Sec-Fetch-Site': 'same-origin',
     'Sec-GPC': '1',
 }
-for i in range(1,2):
-    date = f'2024-04-{10+i}'
+for i in range(1, 32):
+    date = f'2024-04-{0+i}'
     response = requests.get(f'https://www.nytimes.com/games-assets/strands/{date}.json', headers=headers)
 
-    with open(f"GameArchive/{date} - answers.json", 'w') as f:
+    with open(f"GameArchive/{date}.json", 'w') as f:
         f.write(response.text)

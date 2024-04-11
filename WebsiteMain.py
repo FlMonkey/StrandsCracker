@@ -6,7 +6,10 @@ app = Flask(__name__)
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
-    return render_template('index.html')
+    # I have a folder called GameArchive with a bunch of json files in it, I need to load all of the JSON files. Their names are the dates each game was published
+
+    allGames = []
+    for file in o
 
 
 
